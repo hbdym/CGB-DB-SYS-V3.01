@@ -47,6 +47,44 @@
 	</div>
 </div>
 <script type="text/javascript">
+	$(function () {
+		$("#pageId").load("doPageUI");
+	})
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!--<script type="text/javascript">
    //JS 问题如何解决? console.log(),debugger,排除法
    $(function(){
 	   //在log_list.html页面的pageId位置，加载page.html,合二为一。
@@ -113,7 +151,7 @@
 	   //4.1定义删除的url
 	   var url="log/doDeleteObjects"
 	   //4.2定义删除参数
-	   var params={"ids":idArray.toString()};//[1,2,3]--toString--->1,2,3
+	   var params={"ids":idArray.toString()};//[1,2,3]&#45;&#45;toString-&ndash;&gt;1,2,3
 	   //4.3发送异步请求执行删除
 	   $.post(url,params,function(result){
 		   if(result.state==1){
@@ -140,7 +178,7 @@
 	   var pageCount=$("#pageId").data("pageCount");
 	   var checkAllState=$("#checkAll").prop("checked");
 	   if(checkAllState&&pageCurrent==pageCount&&pageCurrent>1){
-		   pageCurrent--;
+		   pageCurrent&#45;&#45;;
 		   $("#pageId").data("pageCurrent",pageCurrent);
 	   }
 	   //3.查询日志信息
@@ -171,7 +209,7 @@
 	   //2.定义请求url
 	   var url="log/doFindPageObjects";
 	   //3.发送异步请求加载数据，并处理响应结果
-	   $.getJSON(url,params,function(result){//result-->JsonResult
+	   $.getJSON(url,params,function(result){//result&ndash;&gt;JsonResult
 		   console.log(result);//json 格式的javascript对象
 		  // debugger
 	       doHandleResponseResult(result);//处理响应结果
@@ -181,7 +219,7 @@
    function doHandleResponseResult(result){//jsonResult
 	   if(result.state==1){
 		   //1.将数据显示在table的tbody位置
-		   doSetTableBodyRows(result.data.records);//result.data-->pageObject
+		   doSetTableBodyRows(result.data.records);//result.data&ndash;&gt;pageObject
 		   //2.在pageId位置显示分页信息
 		   doSetPagination(result.data);//pageObject
 	   }else{
@@ -217,7 +255,7 @@
 	    "<td>"+row.time+"</td>";
 	    return tds;
    }
-</script>
+</script>-->
 
 
 
