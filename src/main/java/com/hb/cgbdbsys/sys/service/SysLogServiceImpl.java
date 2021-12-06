@@ -29,15 +29,12 @@ public class SysLogServiceImpl implements SysLogService{
 
         //3.基于条件查询当前页记录(pageSize定义为2)
         //3.1)定义pageSize
-        int pageSize=2;
+        int pageSize=17;
 
         int startIndex = (pageCurrent-1)*pageSize;
         List<SysLog> records =
                 sysLogDao.findPageObjects(username,startIndex,pageSize);
 
-        PageObject<SysLog> pageObject =
-                new PageObject<>(records, rowCount,  pageSize,  pageCurrent);
-
-        return pageObject;
+        return new PageObject<>(records, rowCount,  pageSize,  pageCurrent);
     }
 }
