@@ -48,8 +48,71 @@
 </div>
 <script type="text/javascript">
 	$(function () {
-		$("#pageId").load("doPageUI");
-	})
+		$("#pageId").load("doPageUI", doGetObjects);
+	});
+
+	function doGetObjects(){
+		let params={"pageCurrent": 1}
+		let url="log/doFindPageObjects";
+
+		$.getJSON(url, params, function (result){
+			console.log("jsonResult", result);
+			doHandleQueryResponseResult(result);
+		})
+
+	}
+	function doHandleQueryResponseResult(result){
+		if (result.state==1){
+			doSetTableBodyRows(result.data.records);
+
+		}else{
+			alert(result.message);
+		}
+	}
+	// 更新tbody中的日志列表信息
+	function doSetTableBodyRows(records){
+		var tBody=$("#tbodyid=");
+		tBody.empty();
+
+		for(const row of records){
+			let tr=$("<tr></tr>");
+
+			let tds=doCreateTds(row);
+			tr.append(tds);
+
+			tBody.append(tr);
+		}
+	}
+
+	function doSetTableBodyRows(records){
+		//1.获取tbody对象，并清空对象
+		var tBody=$("#tbodyId");
+		tBody.empty();
+		//2.迭代records记录，并将其内容追加到tbody
+		for(var i in records){
+			//2.1 构建tr对象
+			var tr=$("<tr></tr>");
+			//2.2 构建tds对象
+			var tds=doCreateTds(records[i]);
+			//2.3 将tds追加到tr中
+			tr.append(tds);
+			//2.4 将tr追加到tbody中
+			tBody.append(tr);
+		}
+	}
+
+	function doCreateTds(data){
+		var tds="<td><input type='checkbox' class='cBox' name='cItem' value='"+data.id+"'></td>"+
+				"<td>"+data.username+"</td>"+
+				"<td>"+data.operation+"</td>"+
+				"<td>"+data.method+"</td>"+
+				"<td>"+data.params+"</td>"+
+				"<td>"+data.ip+"</td>"+
+				"<td>"+data.time+"</td>";
+		return tds;
+
+	}
+
 </script>
 
 
