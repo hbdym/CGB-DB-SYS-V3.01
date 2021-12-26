@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hb.cgbdbsys.sys.dao.SysMenuDao">
+    <select id="findObjects" resultType="map">
+/*第一种方案，表关联查询*/
+/*        select
+               c.* , p.name
+        from sys_menus c
+        left join sys_menus p
+            on c.parentId = p.id*/
+/*第二种方案*/
+    select c.*, (select name from sys_menus p where c.parentId = p.id) parentName from sys_menus c
+    </select>
+
+
+</mapper>

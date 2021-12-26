@@ -25,6 +25,24 @@
         limit #{startIndex}, #{pageSize}
     </select>
 
+    <delete id = "deleteObjects">
+        delete from sys_logs
+        <where>
+            <choose>
+                <when test="ids!=null and ids.length>0">
+                    <foreach collection="ids" separator="or" item="id">
+                        id=#{id}
+                    </foreach>
+                </when>
+                <otherwise>
+                    1 == 2
+                </otherwise>
+            </choose>
+        </where>
+
+
+    </delete>
+
 
 </mapper>
 

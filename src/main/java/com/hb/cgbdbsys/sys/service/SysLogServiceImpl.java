@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import java.rmi.ServerException;
 import java.rmi.server.ServerCloneException;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @Service
 public class SysLogServiceImpl implements SysLogService{
@@ -29,7 +30,7 @@ public class SysLogServiceImpl implements SysLogService{
 
         //3.基于条件查询当前页记录(pageSize定义为2)
         //3.1)定义pageSize
-        int pageSize=17;
+        int pageSize=10;
 
         int startIndex = (pageCurrent-1)*pageSize;
         List<SysLog> records =
@@ -37,4 +38,17 @@ public class SysLogServiceImpl implements SysLogService{
 
         return new PageObject<>(records, rowCount,  pageSize,  pageCurrent);
     }
+
+    @Override
+    public int deleteObjects(long...ids) {
+        if (ids==null || ids.length < 0)
+            throw new IllegalArgumentException("请先选择删除的数据");
+        int rows = sysLogDao.deleteObjects(ids);
+
+        if (rows==0)
+            throw new NoSuchElementException("记录已经不存在");
+
+        return rows;
+    }
+
 }

@@ -8,4 +8,8 @@ import java.rmi.ServerException;
 
 public interface SysLogService {
     PageObject<SysLog> findPageObjects(String username, Integer pageCurrent) throws ServerException;
+
+    int deleteObjects(long...ids);
 }
+
+

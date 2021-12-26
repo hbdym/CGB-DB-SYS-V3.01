@@ -48,15 +48,127 @@
 </div>
 <script type="text/javascript">
 	$(function () {
+
 		$("#pageId").load("doPageUI", doGetObjects);
+		// 文档就绪事件
+		//	查询时间按钮的注册
+		$(".input-group-btn")
+			.on("click",".btn-search", doQueryObjects)
+		//添加删除按钮事件注册
+			.on("click", ".btn-delete", doDeleteObjects)
+		;
+
+		// 添加thead中全选checkbox对象的事件注册
+		$("#checkAll").change(doChangeTBodyCheckBoxState);
+
+		//tbody 中 checkbox 对象的事件注册
+		//$(".cBox").change(doChangeTHeadCheckBoxState); 不成立
+		$("#tbodyId").on("change",".cBox",doChangeTHeadCheckBoxState);
+
+
 	});
+	// 修改theah中checkbox对象的状态
+	function doChangeTHeadCheckBoxState(){
+		// 定义变量标识，默认值为true
+		var flag = true;
+		//获取所有tbody中checkbox对象的值，并进行逻辑与操作
+		$("#tbodyId input[type=checkbox]")
+		.each(function (){
+			flag = flag && $(this).prop("checked");
+		});
+		// 修改thead 中checkbox对象的状态
+		$("#checkAll").prop("checked", flag);
+	}
+	// 修改tbody中checkbox对象的状态
+	function doChangeTBodyCheckBoxState(){
+		// 获取当前点击对象checkbox的状态
+		var theadCheckBoxState=$(this).prop("checked");
+
+		// 修改tbody中checkbox对象的状态
+		$("#tbodyId input[type=checkbox]")
+				.prop("checked",theadCheckBoxState);
+
+
+	}
+	// 获取页面上用户选中的tbody中的checkbox对象的值
+	function doGetCheckedIds(){
+		// 定义数组 用于存储获取的选中记录的id值
+		var array=[];
+
+		// 获取tbody对象中所有的checkbox对象，然后进行迭代，将选中的checkbox的值存储到数组中
+		$("#tbodyId input[type='checkbox']")// 获取checkbox对象
+		.each(function (){// 迭代遍历
+			if($(this).prop("checked")){ // this是当前被遍历到的checkbox
+				array.push($(this).val());
+			}
+		})
+		return array;
+	}
+
+	//基于删除按钮的点击事件执行删除操作
+	function doDeleteObjects(){
+		// 获取用户选中的checkbox对象的值
+		var checkedIds = doGetCheckedIds();
+		// 对选中的记录id进行校验
+		if (checkedIds.length == 0){
+			alert("请先选中对象");
+			return;
+		}
+		if (!confirm("确认删除么？"))return;
+		// 构建向服务端传递请求参数对象，请求的url对象
+		var params = "ids=" + checkedIds.toString();
+		var url = "log/doDeleteObjects";
+		// 发送异步请求执行删除的操作，并基于返回的结果，进行页面刷新
+		$.post(url, params, function (result){
+			if (result.state == 1){
+				alert(result.message);
+				//doGetObjects();
+				doRefreshAfterDeleteOK();
+			}else{
+				alert(result.message);
+			}
+		})
+
+
+	}
+	//
+	function doRefreshAfterDeleteOK(){
+		var pageCount=$("#pageId").data("pageCount");
+		var pageCurrent=$("#pageId").data("pageCurrent");
+		var checkAllState=$("#checkAll").prop("checked");
+
+		if(pageCurrent==pageCount&&checkAllState&&pageCurrent>1){
+			pageCurrent--;
+			$("#pageId").data("pageCurrent",pageCurrent);
+		}
+		doGetObjects();
+	}
+
+	// 基于查询按钮的点击时间，执行日志查询操作
+	function doQueryObjects(){
+		// 初始化当前页码值
+		$("#pageId").data("pageCurrent", 1);
+		// 执行查询的操作，重用doGetObject函数
+		doGetObjects();
+	}
 
 	function doGetObjects(){
-		let params={"pageCurrent": 1}
+		// 每次查询的时候 将全选状态设置为不选中
+		$("#checkAll").prop("checked", false);
+
+		var pageCurrent = $("#pageId").data("pageCurrent");
+		if (!pageCurrent)pageCurrent=1;
+		let params={"pageCurrent": pageCurrent};
+		//查询时 获取用户输入的用户名
+		var username = $("#searchNameId").val();
+			//向json对象动态添加key和value
+			// params变量后面的参数名不能随意定义，要与访问的控制层方法参数名称一致
+		if (username)params.username=username;
+
 		let url="log/doFindPageObjects";
 
 		$.getJSON(url, params, function (result){
-			console.log("jsonResult", result);
+			//console.log("jsonResult", result);
 			doHandleQueryResponseResult(result);
 		})
 
@@ -64,14 +176,25 @@
 	function doHandleQueryResponseResult(result){
 		if (result.state==1){
 			doSetTableBodyRows(result.data.records);
-
+			// 更新日志分页信息
+			doSetPagination(result.data);
 		}else{
-			alert(result.message);
+			//alert(result.message);
+			doSetQuerryErrors(result.message);
 		}
 	}
+
+	function doSetQuerryErrors(message){
+		//$("#tbodyId").html(`<tr><td colspan=7>${message}</td></tr>`);
+		$("#tbodyId").html(`<tr><td colspan=7>${message}</td></tr>`);
+		$(".rowCount").html("总记录数(0)");
+		$(".pageCount").html("总页数(0)");
+		$(".pageCurrent").html("当前页(1)");
+	}
+
 	// 更新tbody中的日志列表信息
 	function doSetTableBodyRows(records){
-		var tBody=$("#tbodyid=");
+		var tBody=$("#tbodyid");
 		tBody.empty();
 
 		for(const row of records){

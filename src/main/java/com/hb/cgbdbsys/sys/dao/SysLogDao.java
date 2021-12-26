@@ -16,4 +16,7 @@ public interface SysLogDao {
              int startIndex,
              int pageSize
     );
+
+    // 根据id执行删除业务
+    int deleteObjects(long... ids);
 }

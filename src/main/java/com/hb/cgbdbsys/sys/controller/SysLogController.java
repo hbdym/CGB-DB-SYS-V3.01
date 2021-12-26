@@ -30,4 +30,12 @@ public class SysLogController {
 
     }
 
+    @ResponseBody
+    @RequestMapping("doDeleteObjects")
+    public JsonResult doDeleteObjects(long... ids){
+        sysLogService.deleteObjects(ids);
+        return new JsonResult("delete ok");
+    }
+
+
 }
