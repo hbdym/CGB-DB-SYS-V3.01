@@ -167,9 +167,13 @@
 
 		let url="log/doFindPageObjects";
 
-		$.getJSON(url, params, function (result){
+/* 		$.getJSON(url, params, function(result){
 			//console.log("jsonResult", result);
 			doHandleQueryResponseResult(result);
+		})*/
+		$.getJSON(url,params,function(result){//result-->JsonResult
+			console.log(result);//json 格式的javascript对象
+			doHandleQueryResponseResult(result);//处理响应结果
 		})
 
 	}

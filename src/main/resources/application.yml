@@ -14,7 +14,16 @@ spring:
     username: bingboy
     password: 1215
     hikari:
-      connection-timeout: 300
+      connection-timeout: 30000
+      minimum-idle: 5
+      maximum-pool-size: 10
+      idle-timeout: 300000
+      max-lifetime: 30000
+      auto-commit: true
+      connection-test-query: SELECT 1
+      validation-timeout: 3000
+      read-only: false
+      login-timeout: 5
   thymeleaf:
     prefix: classpath:/templates/pages/
     suffix: .html
